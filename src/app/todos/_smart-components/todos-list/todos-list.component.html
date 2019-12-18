@@ -1,0 +1,53 @@
+this should stay the same
+
+<app-todos-filters></app-todos-filters>
+
+<ng-container *ngIf="listData$ | async as listData">
+  <mat-paginator
+    [length]="listData?.totalCount"
+    [pageSize]="pageSize"
+    [pageSizeOptions]="pageSizeOptions"
+    [pageIndex]="pageIndex"
+    (page)="paginatorChangeHandler($event)"
+  >
+  </mat-paginator>
+  <table
+    #table
+    mat-table
+    [dataSource]="listData.items"
+    class="mat-elevation-z8 table"
+  >
+    <ng-container matColumnDef="ordinalNumber">
+      <th mat-header-cell *matHeaderCellDef>Lp.</th>
+      <td mat-cell *matCellDef="let element; let i = index">
+        {{ getOrdinalNumber(i) }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="userId">
+      <th mat-header-cell *matHeaderCellDef>userId</th>
+      <td mat-cell *matCellDef="let element">{{ element.userId }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="title">
+      <th mat-header-cell *matHeaderCellDef>Tytuł</th>
+      <td mat-cell *matCellDef="let element">{{ element.title }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="completed">
+      <th mat-header-cell *matHeaderCellDef>Status</th>
+      <td mat-cell *matCellDef="let element">{{ element.completed }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef>Akcje</th>
+      <td mat-cell *matCellDef="let element">actions</td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr
+      mat-row
+      *matRowDef="let row; columns: displayedColumns; let i = index"
+    ></tr>
+  </table>
+</ng-container>

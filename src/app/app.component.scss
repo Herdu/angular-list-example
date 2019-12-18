@@ -1,0 +1,14 @@
+:host {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+header,
+footer {
+  height: 60px;
+  background-color: lightcoral;
+  display: block;
+  width: 100%;
+}
