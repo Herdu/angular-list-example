@@ -2,7 +2,6 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  OnInit,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AbstractListComponent } from 'src/models/abstract-list.component';
@@ -14,8 +13,7 @@ import { TodosModel } from '../../models/todos.model';
   styleUrls: ['./todos-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TodosListComponent extends AbstractListComponent<TodosModel.Todo>
-  implements OnInit {
+export class TodosListComponent extends AbstractListComponent<TodosModel.Todo> {
   readonly displayedColumns: string[] = [
     'ordinalNumber',
     'userId',
@@ -30,10 +28,5 @@ export class TodosListComponent extends AbstractListComponent<TodosModel.Todo>
     protected readonly _changeDetectorRef: ChangeDetectorRef,
   ) {
     super(_activatedRoute, _router, _changeDetectorRef);
-  }
-
-  ngOnInit(): void {
-    super.ngOnInit();
-    // just an example of extending ngOnInit from AbstractListComponent
   }
 }
