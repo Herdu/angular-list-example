@@ -8,10 +8,13 @@ export namespace TodosModel {
     completed: false;
   }
 
-  export type TodoListResponse = ApiModel.ListResponse<Readonly<Todo>>;
-
-  export interface TodoListParams extends ApiModel.PaginationQueryParams<Todo> {
+  export interface TodosListFilters {
     readonly userId: string;
     readonly completed: 'true' | 'false';
   }
+
+  export type TodoListResponse = ApiModel.ListResponse<Readonly<Todo>>;
+
+  export type TodoListParams = ApiModel.PaginationQueryParams &
+    TodosListFilters;
 }

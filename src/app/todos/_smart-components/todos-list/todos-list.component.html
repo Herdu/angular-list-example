@@ -1,6 +1,11 @@
-this should stay the same
+<app-todos-filters
+  [filtersData]="filtersData"
+  (filtersDataChanged)="filtersDataChangeHandler($event)"
+></app-todos-filters>
 
-<app-todos-filters></app-todos-filters>
+<div class="loading" *ngIf="loading">
+  <mat-spinner></mat-spinner>
+</div>
 
 <ng-container *ngIf="listData$ | async as listData">
   <mat-paginator
@@ -16,6 +21,8 @@ this should stay the same
     mat-table
     [dataSource]="listData.items"
     class="mat-elevation-z8 table"
+    matSort
+    (matSortChange)="sortChangeHandler($event)"
   >
     <ng-container matColumnDef="ordinalNumber">
       <th mat-header-cell *matHeaderCellDef>Lp.</th>
@@ -25,17 +32,17 @@ this should stay the same
     </ng-container>
 
     <ng-container matColumnDef="userId">
-      <th mat-header-cell *matHeaderCellDef>userId</th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>userId</th>
       <td mat-cell *matCellDef="let element">{{ element.userId }}</td>
     </ng-container>
 
     <ng-container matColumnDef="title">
-      <th mat-header-cell *matHeaderCellDef>Tytuł</th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Tytuł</th>
       <td mat-cell *matCellDef="let element">{{ element.title }}</td>
     </ng-container>
 
     <ng-container matColumnDef="completed">
-      <th mat-header-cell *matHeaderCellDef>Status</th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
       <td mat-cell *matCellDef="let element">{{ element.completed }}</td>
     </ng-container>
 

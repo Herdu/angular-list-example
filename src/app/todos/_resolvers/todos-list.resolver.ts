@@ -11,11 +11,9 @@ export class TodosListResolver implements Resolve<TodosModel.TodoListResponse> {
 
   // map query params into TodosList params
   private _prepareParams(queryParams: Params): TodosModel.TodoListParams {
-    const page: number = queryParams['page'] ? +queryParams['page'] : 1;
-
-    const limit: number = queryParams['limit']
-      ? +queryParams['limit']
-      : ApiModel.DEFAULT_PAGE_SIZE;
+    const paginationQueryParams: ApiModel.PaginationQueryParams = ApiModel.preparePaginationQueryParams(
+      queryParams,
+    );
 
     const userId: string = queryParams['userId'];
     const completed: 'true' | 'false' = ['true', 'false'].includes(
@@ -24,11 +22,17 @@ export class TodosListResolver implements Resolve<TodosModel.TodoListResponse> {
       ? queryParams['completed']
       : null;
 
-    const todoListParams: TodosModel.TodoListParams = {
-      _start: `${(page - 1) * limit}`,
-      _limit: `${limit}`,
+    const title: string = queryParams['title'] || null;
+
+    const todosListFilters: TodosModel.TodosListFilters = {
       ...(completed ? { completed } : null),
       ...(userId ? { userId } : null),
+      ...(title ? { title } : null),
+    };
+
+    const todoListParams: TodosModel.TodoListParams = {
+      ...paginationQueryParams,
+      ...todosListFilters,
     };
 
     return todoListParams;

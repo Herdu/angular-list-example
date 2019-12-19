@@ -1,5 +1,6 @@
 import { ChangeDetectorRef, OnDestroy, OnInit } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
+import { Sort } from '@angular/material/sort';
 import {
   ActivatedRoute,
   Event,
@@ -61,22 +62,42 @@ export abstract class AbstractListComponent<T> implements OnInit, OnDestroy {
     );
   }
 
-  private _queryParamsChangeHandler(queryParams: Params): void {
-    this.page = (queryParams['page'] ? +queryParams['page'] : null) || 1;
-    this.pageSize =
-      (queryParams['limit'] ? +queryParams['limit'] : null) ||
-      ApiModel.DEFAULT_PAGE_SIZE;
+  private _queryParamsChangeHandler({
+    page,
+    limit,
+    sortField,
+    sortDir,
+    ...filterParams
+  }: Params): void {
+    this.page = (page ? +page : null) || 1;
+    this.pageSize = (limit ? +limit : null) || ApiModel.DEFAULT_PAGE_SIZE;
+
+    this.sortDirection = [
+      ApiModel.SORT_DIR.ASC,
+      ApiModel.SORT_DIR.DESC,
+    ].includes(sortDir)
+      ? sortDir
+      : null;
+    this.sortField = sortField || null; // cast empty string to null
+
+    this.filtersData = filterParams;
   }
 
-  filtersChangeHandler(filtersData: Params): void {
+  filtersDataChangeHandler(filtersData: Params): void {
     this.filtersData = filtersData;
-
     this._reloadData();
   }
 
   paginatorChangeHandler(event: PageEvent): void {
     this.page = event.pageIndex + 1;
     this.pageSize = event.pageSize;
+    this._reloadData();
+  }
+
+  sortChangeHandler(event: Sort): void {
+    this.sortField = (event.active as keyof T) || null;
+    this.sortDirection = (event.direction as ApiModel.SORT_DIR) || null; // casting empty string to null
+
     this._reloadData();
   }
 
@@ -87,6 +108,13 @@ export abstract class AbstractListComponent<T> implements OnInit, OnDestroy {
         ? { limit: this.pageSize }
         : null),
       ...(this.filtersData || {}),
+
+      ...(this.sortField && this.sortDirection
+        ? {
+            sortField: this.sortField,
+            sortDir: this.sortDirection,
+          }
+        : null),
     };
 
     this._router.navigate([], {

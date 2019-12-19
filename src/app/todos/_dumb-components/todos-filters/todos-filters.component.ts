@@ -1,15 +1,85 @@
-import { Component, OnInit } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  Output,
+  SimpleChanges,
+} from '@angular/core';
+import { AbstractControl, FormBuilder, FormGroup } from '@angular/forms';
+import { Params } from '@angular/router';
+import { TodosModel } from '../../models/todos.model';
 
 @Component({
   selector: 'app-todos-filters',
   templateUrl: './todos-filters.component.html',
-  styleUrls: ['./todos-filters.component.scss']
+  styleUrls: ['./todos-filters.component.scss'],
 })
-export class TodosFiltersComponent implements OnInit {
+export class TodosFiltersComponent implements OnChanges {
+  @Input() filtersData: Params;
+  @Output() readonly filtersDataChanged: EventEmitter<
+    TodosModel.TodosListFilters
+  > = new EventEmitter<TodosModel.TodosListFilters>();
 
-  constructor() { }
+  formGroup: FormGroup;
 
-  ngOnInit() {
+  readonly completeOptions: { name: string; value: string }[] = [
+    {
+      name: 'Wykonane',
+      value: 'true',
+    },
+    {
+      name: 'Do wykonania',
+      value: 'false',
+    },
+  ];
+
+  constructor(private readonly _formBuilder: FormBuilder) {
+    this._initForm();
   }
 
+  private _initForm(): void {
+    this.formGroup = this._formBuilder.group({
+      userId: null,
+      completed: null,
+      title: null,
+    });
+  }
+
+  ngOnChanges(simpleChanges: SimpleChanges): void {
+    if (simpleChanges.filtersData) {
+      this._setFormGroupValue();
+    }
+  }
+
+  private _setFormGroupValue(): void {
+    const data: Params = this.filtersData;
+
+    this.formGroup.patchValue({
+      userId: data ? data.userId : null,
+      completed:
+        data && ['true', 'false'].includes(data.completed)
+          ? data.completed
+          : null,
+      title: data ? data.title : null,
+    });
+  }
+
+  submitHandler(): void {
+    if (this.formGroup.valid) {
+      this.filtersDataChanged.emit(this.formGroup.value);
+    } else {
+      this.formGroup.markAllAsTouched();
+    }
+  }
+
+  clearHandler(): void {
+    this.formGroup.reset();
+    this.formGroup.markAsUntouched();
+    this.submitHandler();
+  }
+
+  getControl(path: string): AbstractControl {
+    return this.formGroup.get(path);
+  }
 }
