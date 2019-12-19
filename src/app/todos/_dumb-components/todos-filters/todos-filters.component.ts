@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   Component,
   EventEmitter,
   Input,
@@ -14,6 +15,7 @@ import { TodosModel } from '../../models/todos.model';
   selector: 'app-todos-filters',
   templateUrl: './todos-filters.component.html',
   styleUrls: ['./todos-filters.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TodosFiltersComponent implements OnChanges {
   @Input() filtersData: Params;
@@ -67,7 +69,15 @@ export class TodosFiltersComponent implements OnChanges {
 
   submitHandler(): void {
     if (this.formGroup.valid) {
-      this.filtersDataChanged.emit(this.formGroup.value);
+      // eliminating empty query parameters
+      const formValue: Params = this.formGroup.value;
+      const todosListFilters: TodosModel.TodosListFilters = {
+        ...(formValue.completed ? { completed: formValue.completed } : null),
+        ...(formValue.userId ? { userId: formValue.userId } : null),
+        ...(formValue.title ? { title: formValue.title } : null),
+      };
+
+      this.filtersDataChanged.emit(todosListFilters);
     } else {
       this.formGroup.markAllAsTouched();
     }
