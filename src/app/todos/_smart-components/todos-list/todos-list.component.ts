@@ -1,8 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AbstractListComponent } from 'src/models/abstract-list.component';
 import { TodosModel } from '../../models/todos.model';
@@ -25,8 +21,7 @@ export class TodosListComponent extends AbstractListComponent<TodosModel.Todo> {
   constructor(
     protected readonly _activatedRoute: ActivatedRoute,
     protected readonly _router: Router,
-    protected readonly _changeDetectorRef: ChangeDetectorRef,
   ) {
-    super(_activatedRoute, _router, _changeDetectorRef);
+    super(_activatedRoute, _router);
   }
 }
