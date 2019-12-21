@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, OnDestroy, OnInit } from '@angular/core';
+import { OnDestroy, OnInit } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { Sort } from '@angular/material/sort';
 import {
@@ -33,7 +33,6 @@ export abstract class AbstractListComponent<T> implements OnInit, OnDestroy {
   constructor(
     protected readonly _activatedRoute: ActivatedRoute,
     protected readonly _router: Router,
-    protected readonly _changeDetectorRef: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
@@ -44,13 +43,11 @@ export abstract class AbstractListComponent<T> implements OnInit, OnDestroy {
     this._router.events.subscribe((event: Event) => {
       if (event instanceof NavigationStart) {
         this.loading = true;
-        this._changeDetectorRef.detectChanges();
         return;
       }
 
       if (event instanceof NavigationEnd) {
         this.loading = false;
-        this._changeDetectorRef.detectChanges();
       }
     });
 
