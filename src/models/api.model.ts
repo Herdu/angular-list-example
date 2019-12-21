@@ -27,6 +27,11 @@ export namespace ApiModel {
     readonly items: T[];
   }
 
+  export interface ResolverData<T> {
+    data?: T;
+    errors?: any;
+  }
+
   /*
     Ta metoda przygotowuje obiekt z polami:
     _start

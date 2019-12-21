@@ -7,6 +7,14 @@
   <mat-spinner></mat-spinner>
 </div>
 
+<ng-container *ngIf="listDataErrors$ | async as errors">
+  <div class="errors">
+    <pre>
+      {{ errors | json }}
+    </pre>
+  </div>
+</ng-container>
+
 <ng-container *ngIf="listData$ | async as listData">
   <mat-paginator
     [length]="listData?.totalCount"
@@ -22,6 +30,8 @@
     [dataSource]="listData.items"
     class="mat-elevation-z8 table"
     matSort
+    [matSortActive]="sortField"
+    [matSortDirection]="sortDirection"
     (matSortChange)="sortChangeHandler($event)"
   >
     <ng-container matColumnDef="ordinalNumber">

@@ -18,6 +18,7 @@ export abstract class AbstractListComponent<T> implements OnInit, OnDestroy {
   readonly pageSizeOptions: number[] = ApiModel.PAGE_SIZE_OPTIONS;
 
   listData$: Observable<ApiModel.ListResponse<Readonly<T>>>;
+  listDataErrors$: Observable<any>;
 
   page: number = 1;
   pageSize: number = ApiModel.DEFAULT_PAGE_SIZE;
@@ -53,8 +54,17 @@ export abstract class AbstractListComponent<T> implements OnInit, OnDestroy {
 
     this.listData$ = this._activatedRoute.data.pipe(
       map(
-        (data: { listData: ApiModel.ListResponse<Readonly<T>> }) =>
-          data.listData,
+        (activatedRouteData: {
+          listData: ApiModel.ResolverData<ApiModel.ListResponse<Readonly<T>>>;
+        }) => activatedRouteData.listData.data,
+      ),
+    );
+
+    this.listDataErrors$ = this._activatedRoute.data.pipe(
+      map(
+        (activatedRouteData: {
+          listData: ApiModel.ResolverData<ApiModel.ListResponse<Readonly<T>>>;
+        }) => activatedRouteData.listData.errors,
       ),
     );
   }
@@ -90,6 +100,10 @@ export abstract class AbstractListComponent<T> implements OnInit, OnDestroy {
     this.page = event.pageIndex + 1;
     this.pageSize = event.pageSize;
     this._reloadData();
+  }
+
+  getSortDir(fieldName: string): ApiModel.SORT_DIR {
+    return this.sortField === fieldName ? this.sortDirection : null;
   }
 
   sortChangeHandler(event: Sort): void {

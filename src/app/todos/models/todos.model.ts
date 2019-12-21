@@ -15,6 +15,8 @@ export namespace TodosModel {
 
   export type TodoListResponse = ApiModel.ListResponse<Readonly<Todo>>;
 
+  export type TodoListResolverData = ApiModel.ResolverData<TodoListResponse>;
+
   export type TodoListParams = ApiModel.PaginationQueryParams &
     TodosListFilters;
 }
