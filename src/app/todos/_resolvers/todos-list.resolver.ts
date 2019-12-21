@@ -9,6 +9,16 @@ import { TodosService } from '../_services/todos.service';
 export class TodosListResolver implements Resolve<TodosModel.TodoListResponse> {
   constructor(private readonly _todosService: TodosService) {}
 
+  resolve(
+    route: ActivatedRouteSnapshot,
+  ): Observable<TodosModel.TodoListResponse> {
+    const queryParams: Params = route.queryParams;
+    const todoListParams: TodosModel.TodoListParams = this._prepareParams(
+      queryParams,
+    );
+    return this._todosService.getTodosList(todoListParams);
+  }
+
   // map query params into TodosList params
   private _prepareParams(queryParams: Params): TodosModel.TodoListParams {
     const paginationQueryParams: ApiModel.PaginationQueryParams = ApiModel.preparePaginationQueryParams(
@@ -36,15 +46,5 @@ export class TodosListResolver implements Resolve<TodosModel.TodoListResponse> {
     };
 
     return todoListParams;
-  }
-
-  resolve(
-    route: ActivatedRouteSnapshot,
-  ): Observable<TodosModel.TodoListResponse> {
-    const queryParams: Params = route.queryParams;
-    const todoListParams: TodosModel.TodoListParams = this._prepareParams(
-      queryParams,
-    );
-    return this._todosService.getTodosList(todoListParams);
   }
 }
