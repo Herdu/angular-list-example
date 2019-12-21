@@ -12,12 +12,10 @@ export namespace ApiModel {
   export const PAGE_SIZE_OPTIONS: number[] = [10, 20, 30];
 
   // these are strings because ALL query params are always strings
-  export interface PaginationQueryParams<
-    T extends { [key: string]: any } = {}
-  > {
+  export interface PaginationQueryParams {
     readonly _start?: string;
     readonly _limit?: string;
-    readonly sortBy?: keyof T;
+    readonly sortBy?: string;
     readonly sortDir?: SORT_DIR;
   }
 

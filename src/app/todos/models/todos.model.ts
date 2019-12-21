@@ -11,6 +11,7 @@ export namespace TodosModel {
   export interface TodosListFilters {
     readonly userId: string;
     readonly completed: 'true' | 'false';
+    readonly title: string;
   }
 
   export type TodoListResponse = ApiModel.ListResponse<Readonly<Todo>>;

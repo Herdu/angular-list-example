@@ -37,21 +37,14 @@ export abstract class AbstractListComponent<T> implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    this._initLoadingState();
+    this._initData();
     this._activatedRoute.queryParams.subscribe(
       this._queryParamsChangeHandler.bind(this),
     );
+  }
 
-    this._router.events.subscribe((event: Event) => {
-      if (event instanceof NavigationStart) {
-        this.loading = true;
-        return;
-      }
-
-      if (event instanceof NavigationEnd) {
-        this.loading = false;
-      }
-    });
-
+  private _initData(): void {
     this.listData$ = this._activatedRoute.data.pipe(
       map(
         (activatedRouteData: {
@@ -66,6 +59,21 @@ export abstract class AbstractListComponent<T> implements OnInit, OnDestroy {
           listData: ApiModel.ResolverData<ApiModel.ListResponse<Readonly<T>>>;
         }) => activatedRouteData.listData.errors,
       ),
+    );
+  }
+
+  private _initLoadingState(): void {
+    this._subscription.add(
+      this._router.events.subscribe((event: Event) => {
+        if (event instanceof NavigationStart) {
+          this.loading = true;
+          return;
+        }
+
+        if (event instanceof NavigationEnd) {
+          this.loading = false;
+        }
+      }),
     );
   }
 
@@ -102,31 +110,28 @@ export abstract class AbstractListComponent<T> implements OnInit, OnDestroy {
     this._reloadData();
   }
 
-  getSortDir(fieldName: string): ApiModel.SORT_DIR {
-    return this.sortField === fieldName ? this.sortDirection : null;
-  }
-
   sortChangeHandler(event: Sort): void {
     this.sortField = (event.active as keyof T) || null;
     this.sortDirection = (event.direction as ApiModel.SORT_DIR) || null; // casting empty string to null
-
     this._reloadData();
   }
 
   protected _reloadData(): void {
     const newQueryParams: Params = {
+      // pagination
       ...(this.page && this.page !== 1 ? { page: this.page } : null),
       ...(this.pageSize && this.pageSize !== ApiModel.DEFAULT_PAGE_SIZE
         ? { limit: this.pageSize }
         : null),
-      ...(this.filtersData || {}),
-
+      // sorting
       ...(this.sortField && this.sortDirection
         ? {
             sortField: this.sortField,
             sortDir: this.sortDirection,
           }
         : null),
+      // filters
+      ...(this.filtersData || {}),
     };
 
     this._router.navigate([], {
