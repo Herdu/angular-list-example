@@ -14,7 +14,7 @@ import { map } from 'rxjs/operators';
 import { ApiModel } from './api.model';
 
 export abstract class AbstractListComponent<T> implements OnInit, OnDestroy {
-  private _subscription: Subscription = new Subscription();
+  protected _subscription: Subscription = new Subscription();
   readonly pageSizeOptions: number[] = ApiModel.PAGE_SIZE_OPTIONS;
 
   listData$: Observable<ApiModel.ListResponse<Readonly<T>>>;
@@ -66,8 +66,9 @@ export abstract class AbstractListComponent<T> implements OnInit, OnDestroy {
     sortDir,
     ...filterParams
   }: Params): void {
-    this.page = (page ? +page : null) || 1;
-    this.pageSize = (limit ? +limit : null) || ApiModel.DEFAULT_PAGE_SIZE;
+    this.page = (page && !isNaN(+page) ? +page : null) || 1;
+    this.pageSize =
+      (limit && !isNaN(+limit) ? +limit : null) || ApiModel.DEFAULT_PAGE_SIZE;
 
     this.sortDirection = [
       ApiModel.SORT_DIR.ASC,

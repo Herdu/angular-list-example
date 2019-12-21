@@ -37,13 +37,18 @@ export namespace ApiModel {
   export const preparePaginationQueryParams: (
     queryParams: Params,
   ) => PaginationQueryParams = (queryParams: Params) => {
-    const page: number = queryParams['page'] ? +queryParams['page'] : 1;
+    const page: number =
+      queryParams['page'] && !isNaN(+queryParams['page'])
+        ? +queryParams['page']
+        : 1;
 
-    const limit: number = queryParams['limit']
-      ? +queryParams['limit']
-      : ApiModel.DEFAULT_PAGE_SIZE;
+    const limit: number =
+      queryParams['limit'] && !isNaN(+queryParams['limit'])
+        ? +queryParams['limit']
+        : ApiModel.DEFAULT_PAGE_SIZE;
 
-    const sortField: string = queryParams['sortField'];
+    const sortField: string = queryParams['sortField'] || null;
+
     const sortDir: ApiModel.SORT_DIR = [
       ApiModel.SORT_DIR.ASC,
       ApiModel.SORT_DIR.DESC,
