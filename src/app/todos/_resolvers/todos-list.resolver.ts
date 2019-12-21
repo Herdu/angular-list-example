@@ -42,7 +42,9 @@ export class TodosListResolver implements Resolve<TodosModel.TodoListResponse> {
     route: ActivatedRouteSnapshot,
   ): Observable<TodosModel.TodoListResponse> {
     const queryParams: Params = route.queryParams;
-    const todoListParams: TodosModel.TodoListParams = this._prepareParams(queryParams);
+    const todoListParams: TodosModel.TodoListParams = this._prepareParams(
+      queryParams,
+    );
     return this._todosService.getTodosList(todoListParams);
   }
 }
