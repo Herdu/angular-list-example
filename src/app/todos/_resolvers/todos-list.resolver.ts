@@ -25,7 +25,7 @@ export class TodosListResolver implements Resolve<TodosModel.TodoListResponse> {
       queryParams,
     );
 
-    const userId: string = queryParams['userId'];
+    const userId: string = queryParams['userId'] || null;
     const completed: 'true' | 'false' = ['true', 'false'].includes(
       queryParams['completed'],
     )
