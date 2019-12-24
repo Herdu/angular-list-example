@@ -3,6 +3,7 @@ import { PageEvent } from '@angular/material/paginator';
 import { Sort } from '@angular/material/sort';
 import {
   ActivatedRoute,
+  Data,
   Event,
   NavigationEnd,
   NavigationStart,
@@ -10,7 +11,7 @@ import {
   Router,
 } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { ApiModel } from './api.model';
 
 export abstract class AbstractListComponent<T> implements OnInit, OnDestroy {
@@ -46,6 +47,14 @@ export abstract class AbstractListComponent<T> implements OnInit, OnDestroy {
 
   private _initData(): void {
     this.listData$ = this._activatedRoute.data.pipe(
+      tap((activatedRouteData: Data) => {
+        // check whether route resolver resolving 'ListData' property is implemented
+        if (!activatedRouteData.listData) {
+          throw ReferenceError(
+            'ListData property in Activated route snapshot data is missing. Did you forget to implement List data resolver?',
+          );
+        }
+      }),
       map(
         (activatedRouteData: {
           listData: ApiModel.ResolverData<ApiModel.ListResponse<Readonly<T>>>;
