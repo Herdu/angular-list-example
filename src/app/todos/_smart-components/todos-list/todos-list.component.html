@@ -1,11 +1,17 @@
+<!-- FILTERS -->
+
 <app-todos-filters
   [filtersData]="filtersData"
   (filtersDataChanged)="filtersDataChangeHandler($event)"
 ></app-todos-filters>
 
+<!-- LOADING SPINNER -->
+
 <div class="loading" *ngIf="loading">
   <mat-spinner></mat-spinner>
 </div>
+
+<!-- LIST DATA ERRORS -->
 
 <ng-container *ngIf="listDataErrors$ | async as errors">
   <div class="errors">
@@ -16,6 +22,8 @@
 </ng-container>
 
 <ng-container *ngIf="listData$ | async as listData">
+  <!-- PAGINATION -->
+
   <mat-paginator
     [length]="listData?.totalCount"
     [pageSize]="pageSize"
@@ -24,6 +32,9 @@
     (page)="paginatorChangeHandler($event)"
   >
   </mat-paginator>
+
+  <!-- DATA TABLE -->
+
   <table
     #table
     mat-table
